@@ -10,18 +10,37 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
+    redirect: '/admin/users/list',
+  },
+  {
+    path: '/admin',
     component: Layout,
-    redirect: '/users',
+    redirect: '/admin/users/list',
     children: [
       {
-        path: 'users',
+        path: 'users/list',
         name: 'UserList',
         component: () => import('../views/UserList.vue'),
       },
       {
-        path: 'logs',
+        path: 'users/admin',
+        name: 'AdminList',
+        component: () => import('../views/AdminList.vue'),
+      },
+      {
+        path: 'audit/list',
         name: 'AuditLogs',
         component: () => import('../views/AuditLogs.vue'),
+      },
+      {
+        path: 'auth/clients',
+        name: 'ClientList',
+        component: () => import('../views/ClientList.vue'),
+      },
+      {
+        path: 'settings/config',
+        name: 'SystemConfig',
+        component: () => import('../views/SystemConfig.vue'),
       },
     ],
   },

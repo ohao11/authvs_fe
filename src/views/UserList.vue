@@ -19,7 +19,6 @@
       <template #header>
         <div class="card-header">
           <span class="header-title">用户列表</span>
-          <el-button type="primary" :icon="Plus">新增用户</el-button>
         </div>
       </template>
       
@@ -51,12 +50,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="createdAt" label="创建时间" width="180" />
-        <el-table-column label="操作" width="150" fixed="right" align="center">
-          <template #default>
-            <el-button link type="primary" size="small">编辑</el-button>
-            <el-button link type="danger" size="small">删除</el-button>
-          </template>
-        </el-table-column>
       </el-table>
 
       <div class="pagination-container">
@@ -79,7 +72,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { getUserList } from '../api';
 import type { UserVo, UserQueryParam } from '../api/types';
-import { Search, Refresh, Plus, Message } from '@element-plus/icons-vue';
+import { Search, Refresh, Message } from '@element-plus/icons-vue';
 
 const loading = ref(false);
 const tableData = ref<UserVo[]>([]);

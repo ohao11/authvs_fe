@@ -13,14 +13,7 @@
         text-color="rgba(255, 255, 255, 0.65)"
         active-text-color="#fff"
       >
-        <el-menu-item index="/users">
-          <el-icon><User /></el-icon>
-          <span>用户管理</span>
-        </el-menu-item>
-        <el-menu-item index="/logs">
-          <el-icon><Document /></el-icon>
-          <span>审计管理</span>
-        </el-menu-item>
+        <sidebar-item v-for="menu in menuList" :key="menu.id" :item="menu" />
       </el-menu>
     </el-aside>
     <el-container>
@@ -55,16 +48,60 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted, markRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { User, Document, ArrowDown, ElementPlus } from '@element-plus/icons-vue';
-import { logout } from '../api';
+import { User, Document, ArrowDown, ElementPlus, Key, Setting } from '@element-plus/icons-vue';
+import { logout, getUserMenus } from '../api';
+import type { MenuVo } from '../api/types';
 import { ElMessage } from 'element-plus';
+import SidebarItem from '../components/SidebarItem.vue';
 
 const route = useRoute();
 const router = useRouter();
 
 const activeMenu = computed(() => route.path);
+
+// Extend MenuVo to include optional icon for frontend mapping
+interface MenuItem extends MenuVo {
+  icon?: any;
+}
+
+const menuList = ref<MenuItem[]>([]);
+
+const iconMap: Record<string, any> = {
+  '/admin/users': markRaw(User),
+  '/admin/audit': markRaw(Document),
+  '/admin/auth': markRaw(Key),
+  '/admin/settings': markRaw(Setting),
+};
+
+const fetchMenus = async () => {
+  try {
+    const res = await getUserMenus();
+    // Map icons to the menu items recursively
+    const mapIcons = (items: MenuVo[]): MenuItem[] => {
+      return items.map(item => {
+        const newItem: MenuItem = { ...item };
+        // Try to match icon by path, or use default
+        if (iconMap[item.path]) {
+          newItem.icon = iconMap[item.path];
+        } else {
+           // Default icon or specific logic
+           // newItem.icon = markRaw(MenuIcon);
+        }
+        
+        if (newItem.children && newItem.children.length > 0) {
+          newItem.children = mapIcons(newItem.children);
+        }
+        return newItem;
+      });
+    };
+    
+    menuList.value = mapIcons(res);
+  } catch (error) {
+    console.error('Failed to fetch menus', error);
+  }
+};
 
 const handleLogout = async () => {
   try {
@@ -76,6 +113,10 @@ const handleLogout = async () => {
   ElMessage.success('已退出');
   router.push('/login');
 };
+
+onMounted(() => {
+  fetchMenus();
+});
 </script>
 
 <style scoped>
