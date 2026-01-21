@@ -24,12 +24,24 @@ service.interceptors.response.use(
   (response) => {
     const res = response.data;
     if (res.code !== 200) {
+      if (res.code === 401 || res.code === 403) {
+        localStorage.removeItem('token');
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+      }
       ElMessage.error(res.message || 'Error');
       return Promise.reject(new Error(res.message || 'Error'));
     }
     return res.data;
   },
   (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      localStorage.removeItem('token');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
     ElMessage.error(error.message || 'Request Error');
     return Promise.reject(error);
   }

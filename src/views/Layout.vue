@@ -1,10 +1,17 @@
 <template>
   <el-container class="layout-container">
-    <el-aside width="200px">
+    <el-aside width="240px" class="layout-aside">
+      <div class="logo-container">
+        <el-icon class="logo-icon" :size="32" color="#fff"><ElementPlus /></el-icon>
+        <h1 class="system-title">后台管理系统</h1>
+      </div>
       <el-menu
         router
         :default-active="activeMenu"
-        class="el-menu-vertical-demo"
+        class="el-menu-vertical"
+        background-color="#001529"
+        text-color="rgba(255, 255, 255, 0.65)"
+        active-text-color="#fff"
       >
         <el-menu-item index="/users">
           <el-icon><User /></el-icon>
@@ -17,21 +24,31 @@
       </el-menu>
     </el-aside>
     <el-container>
-      <el-header style="text-align: right; font-size: 12px; display: flex; align-items: center; justify-content: flex-end; border-bottom: 1px solid #eee;">
-        <el-dropdown>
-          <span class="el-dropdown-link" style="cursor: pointer; display: flex; align-items: center;">
-            管理员
-            <el-icon class="el-icon--right"><arrow-down /></el-icon>
-          </span>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+      <el-header class="layout-header">
+        <div class="header-left">
+          <!-- 可以在这里加面包屑或折叠按钮 -->
+        </div>
+        <div class="header-right">
+          <el-dropdown trigger="click">
+            <span class="user-dropdown">
+              <el-avatar :size="32" class="user-avatar">A</el-avatar>
+              <span class="username">管理员</span>
+              <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </el-header>
-      <el-main>
-        <router-view />
+      <el-main class="layout-main">
+        <router-view v-slot="{ Component }">
+          <transition name="fade-transform" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -40,7 +57,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { User, Document, ArrowDown } from '@element-plus/icons-vue';
+import { User, Document, ArrowDown, ElementPlus } from '@element-plus/icons-vue';
 import { logout } from '../api';
 import { ElMessage } from 'element-plus';
 
@@ -64,5 +81,119 @@ const handleLogout = async () => {
 <style scoped>
 .layout-container {
   height: 100vh;
+}
+
+.layout-aside {
+  background-color: #001529;
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+}
+
+.logo-container {
+  height: 64px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #002140;
+  overflow: hidden;
+}
+
+.logo-icon {
+  margin-right: 12px;
+}
+
+.system-title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.el-menu-vertical {
+  border-right: none;
+}
+
+:deep(.el-menu-item) {
+  margin: 4px 8px;
+  border-radius: 4px;
+  height: 50px;
+  line-height: 50px;
+}
+
+:deep(.el-menu-item.is-active) {
+  background-color: #1890ff !important;
+}
+
+:deep(.el-menu-item:hover) {
+  color: #fff !important;
+}
+
+.layout-header {
+  background: #fff;
+  padding: 0 24px;
+  height: 64px;
+  line-height: 64px;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.65);
+  transition: all 0.3s;
+  padding: 0 12px;
+  border-radius: 4px;
+  height: 48px;
+  outline: none;
+}
+
+.user-dropdown:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.user-avatar {
+  background-color: #1890ff;
+  margin-right: 8px;
+}
+
+.username {
+  font-size: 14px;
+  margin-right: 4px;
+  font-weight: 500;
+}
+
+.layout-main {
+  background-color: #f0f2f5;
+  padding: 24px;
+}
+
+/* Transition animation */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all 0.3s;
+}
+
+.fade-transform-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
