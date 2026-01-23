@@ -12,7 +12,11 @@ import type {
   AdminVo,
   AdminCreateParam,
   AdminUpdateParam,
-  RoleListVo
+  RoleListVo,
+  ClientQueryParam,
+  ClientVo,
+  ClientSaveParam,
+  ClientSecretVo
 } from './types';
 
 export const login = (data: LoginParam) => {
@@ -109,5 +113,50 @@ export const getUserMenus = () => {
   return request<any, MenuVo[]>({
     url: '/api/menu/user-menus',
     method: 'get',
+  });
+};
+
+export const getClientList = (data: ClientQueryParam) => {
+  return request<any, PageVO<ClientVo>>({
+    url: '/api/clients/page',
+    method: 'post',
+    data,
+  });
+};
+
+export const createClient = (data: ClientSaveParam) => {
+  return request<any, ClientVo>({
+    url: '/api/clients',
+    method: 'post',
+    data,
+  });
+};
+
+export const updateClient = (id: number, data: ClientSaveParam) => {
+  return request<any, ClientVo>({
+    url: `/api/clients/${id}`,
+    method: 'put',
+    data,
+  });
+};
+
+export const getClientDetail = (id: number) => {
+  return request<any, ClientVo>({
+    url: `/api/clients/${id}`,
+    method: 'get',
+  });
+};
+
+export const resetClientSecret = (id: number) => {
+  return request<any, ClientSecretVo>({
+    url: `/api/clients/${id}/reset-secret`,
+    method: 'post',
+  });
+};
+
+export const deleteClient = (id: number) => {
+  return request<any, void>({
+    url: `/api/clients/${id}`,
+    method: 'delete',
   });
 };

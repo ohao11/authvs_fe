@@ -145,3 +145,46 @@ export interface AdminUpdateParam {
   roleIds: number[];
   enabled: boolean;
 }
+
+export interface ClientQueryParam {
+  pageNum?: number;
+  pageSize?: number;
+  clientName?: string;
+  clientId?: string;
+}
+
+export interface ClientVo {
+  id: number;
+  clientName: string;
+  clientId: string;
+  clientSecret?: string; // 只有在创建/重置时返回
+  clientType: number;
+  clientTypeDesc: string;
+  grantTypes: string[];
+  redirectUris: string[];
+  scopes: string[];
+  accessTokenValidity: number;
+  refreshTokenValidity: number;
+  description: string;
+  enabled: boolean;
+  createdAt: string;
+}
+
+export interface ClientSaveParam {
+  id?: number;
+  clientName: string;
+  clientType: number;
+  grantTypes: string;
+  redirectUris: string;
+  scopes: string;
+  accessTokenValidity: number;
+  refreshTokenValidity: number;
+  description: string;
+  enabled: boolean;
+}
+
+export interface ClientSecretVo {
+  clientId: string;
+  newClientSecret: string;
+  message: string;
+}
