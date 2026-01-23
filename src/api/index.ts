@@ -30,6 +30,13 @@ export const logout = () => {
   });
 };
 
+export const getMe = () => {
+  return request<any, UserVo>({
+    url: '/api/me',
+    method: 'get',
+  });
+};
+
 export const getUserList = (data: UserQueryParam) => {
   return request<any, PageVO<UserVo>>({
     url: '/api/users/page',

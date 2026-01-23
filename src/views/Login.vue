@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '../api';
+import { login, getMe } from '../api';
 import { ElMessage } from 'element-plus';
 import { User, Lock } from '@element-plus/icons-vue';
 
@@ -78,6 +78,11 @@ const handleLogin = async () => {
   try {
     const res = await login(form.value);
     localStorage.setItem('token', res.token);
+    
+    // 获取用户信息
+    const user = await getMe();
+    localStorage.setItem('userInfo', JSON.stringify(user));
+
     ElMessage.success('登录成功');
     router.push('/');
   } catch (error) {

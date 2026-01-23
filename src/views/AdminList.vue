@@ -66,7 +66,15 @@
         <el-table-column prop="createdAt" label="创建时间" width="180" />
         <el-table-column label="操作" width="100" fixed="right" align="center">
           <template #default="scope">
-            <el-button link type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button 
+              link 
+              type="primary" 
+              size="small" 
+              @click="handleEdit(scope.row)"
+              :disabled="isSuperAdmin(scope.row)"
+            >
+              编辑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -273,6 +281,10 @@ const handleCurrentChange = (val: number) => {
   fetchData();
 };
 
+const isSuperAdmin = (row: AdminVo) => {
+  return row.roles && row.roles.some(role => role.roleCode === 'SUPER_ADMIN');
+};
+
 // CRUD Operations
 const resetForm = () => {
   if (formRef.value) {
@@ -303,7 +315,7 @@ const handleEdit = (row: AdminVo) => {
     formData.username = row.username;
     formData.email = row.email;
     formData.phone = row.phone;
-    formData.roleIds = row.roles ? row.roles.map(r => r.id) : [];
+    formData.roleIds = row.roles ? row.roles.map(r => Number(r.id)) : [];
     formData.enabled = row.enabled === 1;
     // Password is not needed for edit
   });

@@ -25,7 +25,7 @@
           <el-dropdown trigger="click">
             <span class="user-dropdown">
               <el-avatar :size="32" class="user-avatar">A</el-avatar>
-              <span class="username">管理员</span>
+              <span class="username">{{ username }}</span>
               <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
             <template #dropdown>
@@ -58,6 +58,8 @@ import SidebarItem from '../components/SidebarItem.vue';
 
 const route = useRoute();
 const router = useRouter();
+
+const username = ref('管理员');
 
 const activeMenu = computed(() => route.path);
 
@@ -115,6 +117,17 @@ const handleLogout = async () => {
 };
 
 onMounted(() => {
+  const userInfoStr = localStorage.getItem('userInfo');
+  if (userInfoStr) {
+    try {
+      const userInfo = JSON.parse(userInfoStr);
+      if (userInfo && userInfo.username) {
+        username.value = userInfo.username;
+      }
+    } catch (e) {
+      console.error('Failed to parse user info', e);
+    }
+  }
   fetchMenus();
 });
 </script>
